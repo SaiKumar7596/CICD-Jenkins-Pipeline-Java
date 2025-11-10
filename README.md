@@ -20,21 +20,19 @@ The pipeline automatically performs **build, test, code quality scan, artifact u
 
 **Master-Worker Jenkins Architecture**
 
+```
+                      +----------------------+
+                   |    Jenkins Master    |
+                   +----------+-----------+
+                              |
+        -------------------------------------------------
+        |                       |                       |
+ +---------------+      +---------------+      +---------------+
+ |  SonarQube    |      |    Nexus      |      |    Tomcat     |
+ |    Worker     |      |    Worker     |      |    Worker     |
+ +---------------+      +---------------+      +---------------+
 
-    +-----------------+
-    |   Jenkins Master|
-    +--------+--------+
-             |
- -------------------------------
- |             |               |
-
-
-+----------+  +----------+  +----------+
-| SonarQube|  | Nexus    |  | Tomcat   |
-| Worker   |  | Worker   |  | Worker   |
-+----------+  +----------+  +----------+
-
-
+```
 
 - Jenkins Master orchestrates jobs.  
 - Worker nodes execute specific tasks like SonarQube scans, Nexus uploads, and Tomcat deployments.  
