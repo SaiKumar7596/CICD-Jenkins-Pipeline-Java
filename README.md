@@ -498,7 +498,8 @@ Now you can see all the nodes.
 
 <img width="602" height="277" alt="image" src="https://github.com/user-attachments/assets/baf0b881-d207-4f2a-bce7-41b1d6df5a7e" />
 
-* Pipeline as Code (Jenkinsfile) implemented
+
+🧩 End-to-End Pipeline Flow in Real-Time
 
 * Stages:
 
@@ -507,17 +508,154 @@ Now you can see all the nodes.
   3. **Nexus** - Artifact upload
   4. **Tomcat** - WAR deployment
 
-* Jobs executed sequentially across nodes using labels
+* Jobs will executed sequentially across nodes using labels
 
----
+Step 1: Jenkins pulls the code from GitHub:
+🔗 Java Web Calculator App Repo
+
+Step 2: Runs the stages defined in Jenkinsfile:
+
+Build → Sonar → Nexus → Tomcat
+
+
 
 ## GitHub Integration
 
 * Repository: [Java Web Calculator App](https://github.com/SaiKumar7596/Java-Web-Calculator-App)
-* Webhook configured to trigger Jenkins pipeline on code push
-* Pipeline automatically deploys new versions on Tomcat
+
+* This is the code repo where my project is coming from
+
+```
+https://github.com/SaiKumar7596/Java-Web-Calculator-App
+```
+
 
 ---
+<img width="602" height="297" alt="image" src="https://github.com/user-attachments/assets/b8b67f53-6ed9-486a-a408-93001943a0cb" />
+
+<img width="602" height="112" alt="image" src="https://github.com/user-attachments/assets/64f2ca43-54e1-4912-a87b-0416e37d3a7b" />
+
+
+Step 3: Edit settings.xml on Sonar server to match your Nexus credentials:
+```
+<server>
+    <id>nexus</id>
+    <username>admin</username>
+    <password>admin123</password>
+</server>
+```
+<img width="602" height="85" alt="image" src="https://github.com/user-attachments/assets/736039a3-c485-49de-beb0-f404a255ee41" />
+
+<img width="602" height="135" alt="image" src="https://github.com/user-attachments/assets/aa503105-b09a-43e6-bb8e-632abbf9322d" />
+
+Ensure the <id> matches the one used in the Jenkins credentials for Nexus.
+This ensures Maven can authenticate and push artifacts automatically.
+
+Step 4: Assign correct labels in Jenkinsfile:
+
+agent { label 'tomcat' }
+
+<img width="602" height="113" alt="image" src="https://github.com/user-attachments/assets/72b7db21-7407-49e4-9de0-9539501dadd2" />
+
+<img width="602" height="215" alt="image" src="https://github.com/user-attachments/assets/89d4518e-e6de-47de-b2de-62d8237597dc" />
+
+<img width="602" height="185" alt="image" src="https://github.com/user-attachments/assets/02089089-6481-47d1-a2d6-0be6e6c32351" />
+
+<img width="602" height="103" alt="image" src="https://github.com/user-attachments/assets/7cf44642-2484-4908-b03d-88665f53afda" />
+
+<img width="602" height="68" alt="image" src="https://github.com/user-attachments/assets/dd6054da-fc3e-4408-9977-29b59853b7f1" />
+
+<img width="602" height="128" alt="image" src="https://github.com/user-attachments/assets/71f9aba5-ce7b-4b76-ab07-81c1fff5b26a" />
+
+<img width="602" height="110" alt="image" src="https://github.com/user-attachments/assets/cd804073-a9cd-4b02-a2a5-b6d71502d8d9" />
+
+
+This ensures the deployment stage runs on the Tomcat node.
+
+🧠 Example Code Change & Version Deployment
+
+Let’s simulate a code change for version updates:
+
+Open the file
+src/main/webapp/index.jsp
+
+Remove subtraction and multiplication operations (for version 1)
+
+Commit and push changes to GitHub
+
+Go back to Jenkins and click Build Now
+
+✅ Version 1 of your application is automatically built, analyzed, and deployed to Tomcat.
+
+<img width="602" height="213" alt="image" src="https://github.com/user-attachments/assets/6c80626e-8410-44d0-aaeb-87746e7243cf" />
+
+<img width="602" height="263" alt="image" src="https://github.com/user-attachments/assets/da1974fc-5fe0-4f8f-ab9d-082a21cb03b9" />
+
+<img width="602" height="227" alt="image" src="https://github.com/user-attachments/assets/44f233c9-7b90-4544-9c1a-183a3b6c1de1" />
+
+<img width="602" height="291" alt="image" src="https://github.com/user-attachments/assets/0efb1997-b996-4449-9e68-90fbbba47324" />
+
+
+Visit:
+
+http://<TOMCAT_PUBLIC_IP>:8080/Java-Web-Calculator-App
+
+
+You’ll see the updated version of the app.
+
+<img width="602" height="42" alt="image" src="https://github.com/user-attachments/assets/95d87417-49f1-4f3b-b1d3-fed4a4381bf8" />
+
+<img width="602" height="81" alt="image" src="https://github.com/user-attachments/assets/5e3aff28-ffaf-4e61-8575-226dba5c8bef" />
+
+
+Repeat similar steps for Version 2 (adding subtraction) and Version 3 (adding multiplication).
+
+Version @2 of Substraction
+
+<img width="602" height="216" alt="image" src="https://github.com/user-attachments/assets/0403ab2d-72f2-4890-ae51-28d448274984" />
+
+<img width="602" height="111" alt="image" src="https://github.com/user-attachments/assets/7210863a-7200-488c-953b-c365f08fcf7a" />
+
+
+⚡ Automating with GitHub Webhook
+
+For the third version, make the process fully automated by setting up a GitHub webhook.
+
+Steps:
+```
+Go to your GitHub repository → Settings → Webhooks
+
+Click Add Webhook
+
+Payload URL:
+
+http://<JENKINS_PUBLIC_IP>:8080/github-webhook/
+
+Content type: application/json
+
+Select: “Just the push event”
+
+Click Add Webhook
+```
+<img width="602" height="266" alt="image" src="https://github.com/user-attachments/assets/ec1f2f6e-2e73-4437-b177-fa8e40a427fe" />
+
+Now add 'GitHub hook trigger for GITSam poling' on pipeline
+
+
+Now, every time you push code changes, Jenkins automatically triggers the pipeline.
+
+✅ Build → Analyze → Upload → Deploy — all without manual intervention!
+* Pipeline as Code (Jenkinsfile) implemented
+
+
+* Refresh the Jenkins server:
+
+<img width="602" height="260" alt="image" src="https://github.com/user-attachments/assets/c39e890e-d687-4876-9f33-90a833377ca0" />
+
+
+<img width="602" height="122" alt="image" src="https://github.com/user-attachments/assets/1f158ea9-fead-4d47-99e9-94e9341526b2" />
+
+
 
 ## Testing & Deployment
 
@@ -531,16 +669,6 @@ Verified deployment via Tomcat public IP:
 
 http://<TOMCAT_PUBLIC_IP>:8080
 
----
-
-## Screenshots
-
-1. Jenkins Dashboard: `screenshots/jenkins_dashboard.png`
-2. SonarQube Quality Gate: `screenshots/sonarqube_quality.png`
-3. Nexus Repository: `screenshots/nexus_repo.png`
-4. Tomcat Deployment: `screenshots/tomcat_home.png`
-
----
 
 ## Best Practices & Notes
 
@@ -550,33 +678,15 @@ http://<TOMCAT_PUBLIC_IP>:8080
 * Verify all services before running pipeline
 * Use Jenkins credentials securely for tokens & SSH keys
 
----
+✅ Final Outcome: End-to-End Jenkins CI/CD Automation (Pipeline as Code)
 
-## Future Improvements
+This project demonstrates a fully automated, end-to-end CI/CD pipeline using Jenkins Pipeline as Code.
+From code commit to deployment, every stage — build, code quality analysis (SonarQube), artifact management (Nexus), and deployment (Tomcat) — is completely automated without any manual intervention.
 
-* Automated rollback in case of failed deployment
-* Slack/Teams notifications for pipeline events
-* Dockerize worker nodes for reproducibility
-* Add more stages for automated tests, security scans, and performance checks
+This implementation reflects a real-world enterprise CI/CD workflow, ensuring:
 
----
+Continuous Integration through Git-based Jenkins pipelines
 
-```
+Continuous Delivery via Nexus and Tomcat nodes
 
----
-
-✅ **What I added / improved from your notes:**
-- Structured headings for readability  
-- Architecture diagram in ASCII  
-- Commands grouped per server  
-- Clear instructions for Jenkins, SonarQube, Nexus, Tomcat  
-- Pipeline & GitHub integration explained  
-- Best practices & important notes added  
-- Screenshots placeholders for GitHub visualization  
-
----
-
-If you want, I can **also create a version with inline Markdown images, badges for Jenkins/Maven/Sonar, and links to your GitHub repo for a fully professional GitHub `README.md`**. This version will be completely ready to copy-paste to your repository.  
-
-Do you want me to do that next?
-```
+Full automation and scalability using distributed Jenkins agents
